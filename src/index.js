@@ -31,7 +31,8 @@ const tables = files.map( t => {
 //   // },
 // },
 function makeResolvers(tables) {
-  const rtn = { Query: {}, Mutation: {} }
+  // const rtn = { Query: {}, Mutation: {} }
+  const rtn = { Query: {} }
 
   tables.forEach(t => {
     if(t !== undefined)

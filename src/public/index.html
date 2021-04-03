@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Example</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Helvetica, sans-serif;
+        font-size: 1rem;
+        padding: 2rem;
+      }
+    </style>
+    <script>
+      function afterDom() {
+        const gqlUrl = `http://localhost:4000/graphql`;
+        const traitQuery = {
+          query: `
+          {
+            traits {
+              id
+              label
+              percent
+            }
+          }`,
+        };
+        const xhr = new XMLHttpRequest();
+
+        function fetchGQL(query, cb) {
+          xhr.responseType = 'json';
+          xhr.open('POST', gqlUrl);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function () {
+            cb(xhr.response);
+          };
+          xhr.send(JSON.stringify(query));
+        }
+
+        function populateTraits() {
+          fetchGQL(traitQuery, (resp) => {
+            const traits = resp.data.traits;
+
+            const body = document.querySelector('#stuff');
+            traits.forEach((t) => {
+              const h2 = document.createElement('h2');
+              h2.appendChild(document.createTextNode(t.label));
+              body.appendChild(h2);
+            });
+          });
+        }
+
+        populateTraits();
+      }
+    </script>
+  </head>
+  <body onload="afterDom()">
+    <h1>Hi</h1>
+    <div id="stuff"></div>
+  </body>
+</html>

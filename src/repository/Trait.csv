@@ -1,0 +1,4 @@
+"id","category_id","label","percent","tags_id"
+"1","1","things","0.5","1"
+"2","2","stuff blarg","0.43","1,2"
+"3","1","crazy "","" stuff blarg","0.43","1"

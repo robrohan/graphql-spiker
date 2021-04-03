@@ -1,0 +1,27 @@
+{
+  "name": "graphql-spiker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robrohan/graphql-spiker.git"
+  },
+  "description": "Spike a graphql service using flat files",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx node index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^2.1.0",
+    "dotenv": "^6.0.0",
+    "express": "^4.17.1",
+    "graphql": "^14.0.2",
+    "graphql-tools": "^4.0.0",
+    "papaparse": "^5.3.0",
+    "pluralize": "^8.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0",
+    "prettier": "2.0.4"
+  }
+}

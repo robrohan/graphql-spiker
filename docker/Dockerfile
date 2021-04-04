@@ -2,7 +2,7 @@ FROM node:12.18.1
 ENV NODE_ENV=production
 
 RUN apt-get update && \
-  apt-get install gettext ca-certificates 
+  apt-get -y install gettext ca-certificates 
 
 WORKDIR /app
 

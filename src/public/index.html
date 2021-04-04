@@ -29,9 +29,9 @@
         const xhr = new XMLHttpRequest();
 
         function fetchGQL(query, cb) {
-          xhr.responseType = 'json';
-          xhr.open('POST', gqlUrl);
-          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.responseType = "json";
+          xhr.open("POST", gqlUrl);
+          xhr.setRequestHeader("Content-Type", "application/json");
           xhr.onload = function () {
             cb(xhr.response);
           };
@@ -42,9 +42,9 @@
           fetchGQL(traitQuery, (resp) => {
             const traits = resp.data.traits;
 
-            const body = document.querySelector('#stuff');
+            const body = document.querySelector("#stuff");
             traits.forEach((t) => {
-              const h2 = document.createElement('h2');
+              const h2 = document.createElement("h2");
               h2.appendChild(document.createTextNode(t.label));
               body.appendChild(h2);
             });

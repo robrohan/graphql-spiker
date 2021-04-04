@@ -1,6 +1,6 @@
 # GraphQL Spiker
 
-GraphQL Spiker is an application that provides a GraphQL server backed by local CSV files. This is useful when you want to play around with schemas you are designing or to spike a service that isn't done yet.
+GraphQL Spiker is an application that provides a GraphQL server backed by local CSV files. This is useful when you want to play around with schemas you are designing or to mock a service that isn't done yet.
 
 It could also be used for proof of concept ideas, or super small internal services.
 
@@ -114,3 +114,4 @@ Note to link many items, the column value is a comma separated list of external 
 ---
 
 ![running](docs/spiker_running.png)
+![backing data](docs/backingdata.png)

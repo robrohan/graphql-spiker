@@ -1,0 +1,45 @@
+# Install rest-client in vscode to use this file.
+@local_gql=http://localhost:4000/graphql
+
+###
+# Basic query
+POST {{local_gql}}
+Content-Type: application/json
+
+{"query": "{ traits { id label percent } }"}
+
+###
+# One to One
+POST {{local_gql}}
+Content-Type: application/json
+
+{"query": "{ traits { id label percent category { text } } }"}
+
+###
+# One to Many
+POST {{local_gql}}
+Content-Type: application/json
+
+{"query": "{ traits { id label percent tags { text } } }"}
+
+###
+# All
+POST {{local_gql}}
+Content-Type: application/json
+
+{"query": "{ traits { id label percent category { text } tags { text } } }"}
+
+###
+# Query by ID
+POST {{local_gql}}
+Content-Type: application/json
+
+{"query": "{ trait(id: \"2\") { id label percent tags { text } } }"}
+
+
+###
+# Query for list
+POST {{local_gql}}
+Content-Type: application/json
+
+{"query": "{ categories { id text } }"}

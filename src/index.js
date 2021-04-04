@@ -8,11 +8,13 @@ const typeDefs = fs.readFileSync(
   `./repository/${process.env.REPO}/sheet.graphql`,
   "utf8"
 );
-const { getValues, readCachedTable, fileCache } = require("./repository");
+const { log } = require("./log");
+const { getValues, readCachedTable, FILE_CACHE } = require("./repository");
 
 /////////////////////////////////////////////////
 // init resolvers
-// get all the "tables" in the repo directory
+
+log(`Scanning repository ${process.env.REPO}...`);
 const files = fs.readdirSync(`./repository/${process.env.REPO}`);
 // remove file extensions
 const tables = files.map((t) => {
@@ -36,11 +38,12 @@ function makeResolvers(tables) {
   // const rtn = { Query: {}, Mutation: {} }
   const rtn = { Query: {} };
 
+  log(`Reading all tables into memory...`);
   tables.forEach((t) => {
     if (t !== undefined) readCachedTable(t);
   });
 
-  // Example: [Category, Tag, Trait]
+  log(`Creating resolvers for tables...`);
   tables.forEach((t) => {
     if (t !== undefined) {
       rtn.Query[t.toLowerCase()] = async (parent, args, ctx) => {
@@ -52,12 +55,12 @@ function makeResolvers(tables) {
 
       // Look at the CSV fields, and if there is an xxxxx_id, try to
       // make a relation to that object
-      const fields = fileCache[t].meta.fields;
+      const fields = FILE_CACHE[t].meta.fields;
       rtn[t] = {};
       for (let i = 0; i < fields.length; i++) {
         if (fields[i].endsWith("_id")) {
           const relation = fields[i].split("_id")[0];
-          console.log(relation);
+          log(`${t} assumed relation:`, relation);
           const objRelation =
             relation.charAt(0).toUpperCase() + relation.slice(1);
           rtn[t][relation] = async (parent, args, ctx) => {
@@ -70,7 +73,7 @@ function makeResolvers(tables) {
   return rtn;
 }
 const resolvers = makeResolvers(tables);
-console.log(resolvers);
+log(resolvers);
 /////////////////////////////////////////////////
 
 const app = express();
@@ -83,19 +86,20 @@ const corsOptions = {
 };
 
 // Setup JWT authentication middleware
-app.use(async (req, res, next) => {
-  const token = req.headers["authorization"];
-  if (token !== "null") {
-    // try {
-    //   const currentUser = await jwt.verify(token, process.env.SECRET)
-    //   req.currentUser = currentUser
-    // } catch(e) {
-    //   console.error(e);
-    // }
-  }
-  next();
-});
+// app.use(async (req, res, next) => {
+//   const token = req.headers["authorization"];
+//   if (token !== "null") {
+//     // try {
+//     //   const currentUser = await jwt.verify(token, process.env.SECRET)
+//     //   req.currentUser = currentUser
+//     // } catch(e) {
+//     //   console.error(e);
+//     // }
+//   }
+//   next();
+// });
 
+log(`Starting Express / Apollo with cors...`);
 const server = new ApolloServer({
   cors: corsOptions,
   typeDefs,
@@ -107,10 +111,11 @@ const PORT = process.env.PORT || 4000;
 
 // To serve up the playground in :4000/graphql
 app.listen(PORT, () => {
-  console.log(`🚀 Server ready at ${PORT}`);
+  log(`🚀 Server ready at ${PORT}`);
 });
 
 // To serve up the test client in :4001/public
+log(`Starting example frontend server...`);
 http
   .createServer(function (req, res) {
     fs.readFile([__dirname, "/public", req.url].join(""), function (err, data) {

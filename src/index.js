@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 // eslint-disable-next-line no-undef
-const typeDefs = fs.readFileSync(path.resolve(__dirname, 'repository/sheet.graphql'), 'utf8');
+// const typeDefs = fs.readFileSync(path.resolve(__dirname, './repository/sheet.graphql'), 'utf8');
+const typeDefs = fs.readFileSync('./repository/sheet.graphql', 'utf8');
 const pluralize = require('pluralize')
 const { getValues, readCachedTable, fileCache } = require('./repository');
 const { ApolloServer } = require('apollo-server-express');

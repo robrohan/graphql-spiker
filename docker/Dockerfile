@@ -1,15 +1,16 @@
-FROM node:12.18.1
+FROM node:12.22.0-alpine3.10
 ENV NODE_ENV=production
 
-RUN apt-get update && \
-  apt-get -y install gettext ca-certificates 
+RUN apk update && \
+  apk add gettext ca-certificates
 
 WORKDIR /app
 
-COPY ["./src/package.json", "./src/package-lock.json", "./"]
+COPY ["./package.json", "./package-lock.json", "./"]
+
+COPY ./src ./src
+COPY ./repository ./repository
 
 RUN npm install
 
-COPY ./src .
-
-CMD [ "node", "index.js" ]
+CMD [ "node", "./src/index.js" ]

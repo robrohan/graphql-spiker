@@ -10,7 +10,7 @@ const fileCache = {};
 function readCachedTable(table, reload = false) {
   if(fileCache[table] === undefined || reload === true) {
     const csv = Papa.parse(
-      fs.readFileSync(`repository/${table}.csv`, 'utf8'),
+      fs.readFileSync(`./repository/${table}.csv`, 'utf8'),
       {
         quotes: false, 
         quoteChar: '"',

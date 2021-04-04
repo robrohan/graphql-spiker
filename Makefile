@@ -6,22 +6,19 @@ PROJECT=graphql-spiker
 
 install:
 	@echo ">> Install"
-	cd src; \
 	npm i;
 
 start: 
 	@echo ">> Start"
-	cd src; \
 	npm run start
 
 clean: 
 	@echo ">> Cleaning"
-	rm -rf ./src/node_modules
+	rm -rf node_modules
 
 build: 
 	@echo ">> Building docker image"
-	docker build -f $(shell pwd)/docker/Dockerfile -t $(DOCKER_REGISTRY)$(PROJECT):$(GIT_REF) . 
-# $(GIT_REF) .
+	docker build -f $(shell pwd)/docker/Dockerfile -t $(DOCKER_REGISTRY)$(PROJECT):$(GIT_REF) .
 
 upload:
 	@echo ">> Pushing docker image"

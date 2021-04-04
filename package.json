@@ -1,7 +1,7 @@
 {
   "name": "graphql-spiker",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/robrohan/graphql-spiker.git"
@@ -9,7 +9,7 @@
   "description": "Spike a graphql service using flat files",
   "license": "MIT",
   "scripts": {
-    "start": "npx node index.js"
+    "start": "npx node src/index.js"
   },
   "dependencies": {
     "apollo-server": "^2.1.0",

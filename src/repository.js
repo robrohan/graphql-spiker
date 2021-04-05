@@ -83,14 +83,12 @@ function filterRecords(table, filter) {
       if (Array.isArray(filter.id)) {
         filter.id.forEach((i) => {
           const found = search(idx, i);
-          // shouldn't have two ids, but just in case
           addIfArray(found, records);
         });
         return records;
       }
 
       const found = search(idx, filter.id);
-      // shouldn't have two ids, but just in case
       addIfArray(found, records);
       return records;
     }

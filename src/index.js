@@ -11,11 +11,13 @@ const typeDefs = fs.readFileSync(
 const { log } = require("./log");
 const { getValues, readCachedTable, FILE_CACHE } = require("./repository");
 
-/////////////////////////////////////////////////
-// init resolvers
+// Try to find user defined queries in the graphql file
+// this is *super* error prone.
+const extraQueries = [...typeDefs.match(/\S([_\-a-zA-Z0-9]+)\(/gi)];
 
 log(`Scanning repository ${process.env.REPO}...`);
 const files = fs.readdirSync(`./repository/${process.env.REPO}`);
+
 // remove file extensions
 const tables = files.map((t) => {
   const nameExt = t.split(".");
@@ -52,6 +54,13 @@ function makeResolvers(tables) {
       rtn.Query[pluralize(t.toLowerCase(), 2)] = async (parent, args, ctx) => {
         return await getValues(parent, ctx, t, args);
       };
+
+      extraQueries.forEach((query) => {
+        const gqlName = query.slice(0, -1);
+        rtn.Query[gqlName] = async (parent, args, ctx) => {
+          return await getValues(parent, ctx, t, args);
+        };
+      });
 
       // Look at the CSV fields, and if there is an xxxxx_id, try to
       // make a relation to that object

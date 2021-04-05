@@ -1,15 +1,16 @@
 const fs = require("fs");
 // const path = require("path");
-const pluralize = require("pluralize");
 const { ApolloServer } = require("apollo-server-express");
 const express = require("express");
 const http = require("http");
+const pluralize = require("pluralize");
 const typeDefs = fs.readFileSync(
   `./repository/${process.env.REPO}/sheet.graphql`,
   "utf8"
 );
-const { log } = require("./log");
 const { getValues, readCachedTable, FILE_CACHE } = require("./repository");
+const { toTypeName } = require("./manipulation");
+const { log } = require("./log");
 
 // Try to find user defined queries in the graphql file
 // this is *super* error prone.
@@ -36,7 +37,7 @@ const tables = files.map((t) => {
 //   //   return res;
 //   // },
 // },
-function makeResolvers(tables) {
+function makeResolvers(tables, extraQueries) {
   // const rtn = { Query: {}, Mutation: {} }
   const rtn = { Query: {} };
 
@@ -48,10 +49,10 @@ function makeResolvers(tables) {
   log(`Creating resolvers for tables...`);
   tables.forEach((t) => {
     if (t !== undefined) {
-      rtn.Query[t.toLowerCase()] = async (parent, args, ctx) => {
+      rtn.Query[toTypeName(t)] = async (parent, args, ctx) => {
         return await getValues(parent, ctx, t, args);
       };
-      rtn.Query[pluralize(t.toLowerCase(), 2)] = async (parent, args, ctx) => {
+      rtn.Query[pluralize(toTypeName(t), 2)] = async (parent, args, ctx) => {
         return await getValues(parent, ctx, t, args);
       };
 
@@ -68,6 +69,7 @@ function makeResolvers(tables) {
       rtn[t] = {};
       for (let i = 0; i < fields.length; i++) {
         if (fields[i].endsWith("_id")) {
+          // const relation = fileNameToTypeName(fields[i].split("_id")[0]);
           const relation = fields[i].split("_id")[0];
           log(`${t} assumed relation:`, relation);
           const objRelation =
@@ -81,7 +83,8 @@ function makeResolvers(tables) {
   });
   return rtn;
 }
-const resolvers = makeResolvers(tables);
+
+const resolvers = makeResolvers(tables, extraQueries);
 log(resolvers);
 /////////////////////////////////////////////////
 

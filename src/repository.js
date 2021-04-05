@@ -4,6 +4,7 @@ const pluralize = require("pluralize");
 const Papa = require("papaparse");
 const { log } = require("./log");
 const { newNode, insertInto, search } = require("./btree");
+const { toFileName } = require("./manipulation");
 
 // Just to keep people from doing large datasets
 // and crashing things.
@@ -127,7 +128,7 @@ function filterRecords(table, filter) {
 // Scan a table using a set of filters. This is
 // perfect match only
 function scanTable(table, filter) {
-  const records = filterRecords(table, filter);
+  const records = filterRecords(toFileName(table), filter);
 
   // An ID query should only return one record
   // just assume it's index zero or null.
@@ -156,7 +157,7 @@ async function getValues(parent, ctx, sheet, args) {
   }
 
   // force table into non-plural
-  return scanTable(pluralize(sheet, 1), args);
+  return scanTable(sheet, args);
 }
 
 module.exports = {

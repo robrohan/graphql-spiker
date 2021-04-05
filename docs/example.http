@@ -43,3 +43,10 @@ POST {{local_gql}}
 Content-Type: application/json
 
 {"query": "{ categories { id text } }"}
+
+###
+# Custom query
+POST {{local_gql}}
+Content-Type: application/json
+
+{"query": "{ traitsByCategory(category_id: \"1\") { id label percent category { id text } } }"}

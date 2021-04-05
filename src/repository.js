@@ -62,7 +62,7 @@ function filterRecords(table, filter) {
   // limited to max size. (could use this for
   // paging...)
   if (filterKeyLen === 0) {
-    log("No filter return slice...");
+    log(`${table}: No filter return slice...`);
     return data.slice(0, MAX_RESULTS);
   }
 
@@ -76,7 +76,7 @@ function filterRecords(table, filter) {
     // We can only really do this if ID is the only thing they
     // are looking for, and this table has an indexed id
     if (filterKeyLen === 1 && filter.id !== undefined && idx) {
-      log("ID only search...");
+      log(`${table}: ID only search...`);
       // if a one-to-many, check each item to see
       // if it matches - this only applies to a filter
       // that is an array id: [1,2,3]
@@ -94,7 +94,7 @@ function filterRecords(table, filter) {
     }
   }
 
-  log("Full table scan...");
+  log(`${table}: Full table scan...`);
   {
     // Loop over all the data in memory and apply the
     // filters to each row. This is knowingly O(N^2).

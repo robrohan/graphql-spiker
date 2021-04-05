@@ -9,7 +9,8 @@
   "description": "Spike a graphql service using flat files",
   "license": "MIT",
   "scripts": {
-    "start": "REPO=example npx node src/index.js"
+    "start": "REPO=example npx node src/index.js",
+    "test": "npx jest"
   },
   "dependencies": {
     "apollo-server": "^2.1.0",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "eslint": "^7.23.0",
+    "jest": "^26.6.3",
     "prettier": "^2.2.1"
   }
 }

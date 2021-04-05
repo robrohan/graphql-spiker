@@ -8,6 +8,10 @@ install:
 	@echo ">> Install"
 	npm i;
 
+test:
+	@echo ">> Test"
+	npm run test
+
 start: 
 	@echo ">> Start"
 	npm run start

@@ -22,6 +22,15 @@ d.definitions.forEach((def) => {
     if (def.fields) {
       def.fields.forEach((f) => {
         console.log("\t==>", f.kind, "::", f.name);
+        if (f.directives.length) {
+          console.log(
+            "\t\t",
+            f.directives[0],
+            f.directives[0].arguments[0].name,
+            " = ",
+            f.directives[0].arguments[0].value
+          );
+        }
       });
     }
   }

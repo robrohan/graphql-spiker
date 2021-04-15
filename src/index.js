@@ -11,6 +11,21 @@ const typeDefs = fs.readFileSync(
 const { getValues, readCachedTable, FILE_CACHE } = require("./repository");
 const { toTypeName } = require("./manipulation");
 const { log } = require("./log");
+const { Source, parse } = require("graphql"); // CommonJS
+
+const s = new Source(typeDefs);
+const d = parse(s);
+d.definitions.forEach((def) => {
+  console.log("==>", def.kind, "::", def.name);
+
+  if (def.kind == "ObjectTypeDefinition") {
+    if (def.fields) {
+      def.fields.forEach((f) => {
+        console.log("\t==>", f.kind, "::", f.name);
+      });
+    }
+  }
+});
 
 // Try to find user defined queries in the graphql file
 // this is *super* error prone.
@@ -58,9 +73,13 @@ function makeResolvers(tables, extraQueries) {
 
       extraQueries.forEach((query) => {
         const gqlName = query.slice(0, -1);
-        rtn.Query[gqlName] = async (parent, args, ctx) => {
-          return await getValues(parent, ctx, t, args);
-        };
+        if (!gqlName.startsWith("@")) {
+          rtn.Query[gqlName] = async (parent, args, ctx) => {
+            return await getValues(parent, ctx, t, args);
+          };
+        } else {
+          console.log(gqlName, query);
+        }
       });
 
       // Look at the CSV fields, and if there is an xxxxx_id, try to
@@ -70,7 +89,7 @@ function makeResolvers(tables, extraQueries) {
       for (let i = 0; i < fields.length; i++) {
         if (fields[i].endsWith("_id")) {
           // const relation = fileNameToTypeName(fields[i].split("_id")[0]);
-          const relation = fields[i].split("_id")[0];
+          const relation = toTypeName(fields[i].split("_id")[0]);
           log(`${t} assumed relation:`, relation);
           const objRelation =
             relation.charAt(0).toUpperCase() + relation.slice(1);

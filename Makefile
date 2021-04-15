@@ -1,8 +1,9 @@
-GIT_REF = $(shell git rev-parse --short HEAD)
-REGION = au
-REGISTRY_ID = 0
-DOCKER_REGISTRY = 
+GIT_REF=$(shell git rev-parse --short HEAD)
+REGION=au
+REGISTRY_ID=0
+DOCKER_REGISTRY=
 PROJECT=graphql-spiker
+REPO?=example
 
 install:
 	@echo ">> Install"
@@ -14,7 +15,7 @@ test:
 
 start: 
 	@echo ">> Start"
-	npm run start
+	REPO=$(REPO) npm run start
 
 clean: 
 	@echo ">> Cleaning"

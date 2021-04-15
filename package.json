@@ -9,7 +9,7 @@
   "description": "Spike a graphql service using flat files",
   "license": "MIT",
   "scripts": {
-    "start": "REPO=example npx node src/index.js",
+    "start": "npx node src/index.js",
     "test": "npx jest"
   },
   "dependencies": {

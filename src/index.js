@@ -5,7 +5,7 @@ const express = require("express");
 const http = require("http");
 const pluralize = require("pluralize");
 const typeDefs = fs.readFileSync(
-  `./repository/${process.env.REPO}/sheet.graphql`,
+  `./repository/${process.env.REPO}/schema.graphql`,
   "utf8"
 );
 const { getValues, readCachedTable, FILE_CACHE } = require("./repository");

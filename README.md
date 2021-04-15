@@ -6,7 +6,7 @@ It could also be used for proof of concept ideas, or super small internal servic
 
 ## How it Works
 
-1. Define a schema in the repository directory: `sheet.graphql`
+1. Define a schema in the repository directory: `schema.graphql`
 1. Create CSV files in the same directory with the name of the Types you define in the schema. Case matters, use uppercase object names. Meaning:
 
 ```

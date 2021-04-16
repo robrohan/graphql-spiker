@@ -1,4 +1,3 @@
-const { log } = require("./log");
 const pluralize = require("pluralize");
 
 // Tries to make sure whatever you pass it looks
@@ -40,7 +39,12 @@ function toTypeName(filename) {
   return newString.join("");
 }
 
+function isPluralized(str) {
+  return str.toLowerCase() === pluralize(str.toLowerCase(), 1);
+}
+
 module.exports = {
   toTypeName,
   toFileName,
+  isPluralized,
 };

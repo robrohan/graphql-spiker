@@ -20,9 +20,10 @@ type Tag {
 }
 
 type Query {
-  trait(id: ID!): Trait
+  trait(id: ID!): Trait @spiker(table: "Trait")
   traits: [Trait!]! @spiker(table: "Trait")
   # category(id: ID!): Category
   categories: [Category!]! @spiker(table: "Category")
   traitsByCategory(category_id: String!): [Trait!]! @spiker(table: "Trait")
+  categoryByText(text: String!): [Category] @spiker(table: "Category")
 }

@@ -11,9 +11,9 @@ WORKDIR /app
 
 COPY ["./package.json", "./package-lock.json", "./"]
 
-COPY ./src ./src
+COPY ./dist ./dist
 COPY ./repository ./repository
 
 RUN npm install
 
-CMD [ "node", "./src/index.js" ]
+CMD [ "node", "./dist/spiker.js" ]

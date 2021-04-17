@@ -1,7 +1,7 @@
-const { newNode, insertInto, search } = require("./btree");
-const { log } = require("./log");
+import { newNode, insertInto, search, Node } from "./btree";
+import { log } from "./log";
 
-function mockTree() {
+function mockTree(): Node {
   const root = newNode("0");
   const node0 = newNode("abc:def:1", { cat: "meow", dog: "woof" });
   const node1 = newNode("qqi:inf:19", { horse: "wheee", mouse: "squeak" });
@@ -39,31 +39,31 @@ test("insertInto several nodes", () => {
 
 test("basic search by id", () => {
   const root = mockTree();
-  result = search(root, "qqi:inf:19");
+  const result = search(root, "qqi:inf:19");
   expect(result).toEqual({ horse: "wheee", mouse: "squeak" });
 });
 
 test("basic search by id 2", () => {
   const root = mockTree();
-  result = search(root, "ziqi:iof:39");
+  const result = search(root, "ziqi:iof:39");
   expect(result).toEqual({ cat: "purrr", bird: "squawk" });
 });
 
 test("basic search by id no result", () => {
   const root = mockTree();
-  result = search(root, "ijijesoifjsefj");
+  const result = search(root, "ijijesoifjsefj");
   expect(result).toBeUndefined();
 });
 
 test("basic search by id no result 2", () => {
   const root = mockTree();
-  result = search(root, "iiqi:iof:40");
+  const result = search(root, "iiqi:iof:40");
   expect(result).toBeUndefined();
 });
 
 test("basic search by id no result 3", () => {
   const root = mockTree();
-  result = search(root, undefined);
+  const result = search(root, undefined);
   expect(result).toBeUndefined();
 });
 
@@ -73,7 +73,7 @@ test("Duplicate ID insert", () => {
   const node = newNode("iiqi:iof:39", { monkey: "poo", llama: "blurp" });
   insertInto(root, node);
 
-  result = search(root, "iiqi:iof:39");
+  const result = search(root, "iiqi:iof:39");
 
   expect(Array.isArray(result)).toBe(true);
   expect(result.length).toEqual(2);
@@ -87,7 +87,7 @@ test("Duplicate ID insert 3", () => {
   insertInto(root, node0);
   insertInto(root, node1);
 
-  result = search(root, "iiqi:iof:39");
+  const result = search(root, "iiqi:iof:39");
 
   expect(Array.isArray(result)).toBe(true);
   expect(result.length).toEqual(3);

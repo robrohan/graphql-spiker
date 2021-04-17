@@ -1,4 +1,5 @@
-const { toTypeName, toFileName } = require("./manipulation");
+import { toTypeName, toFileName } from "./manipulation";
+// import pluralize from "pluralize";
 const pluralize = require("pluralize");
 
 test("case tweaks", () => {

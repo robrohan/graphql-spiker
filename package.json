@@ -1,7 +1,7 @@
 {
   "name": "graphql-spiker",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "dist/spiker.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/robrohan/graphql-spiker.git"
@@ -9,7 +9,8 @@
   "description": "Spike a graphql service using flat files",
   "license": "MIT",
   "scripts": {
-    "start": "npx node src/index.js",
+    "build": "npx esbuild src/index.ts --bundle --platform=node --external:express --external:apollo-server-express --external:graphql --external:pluralize --external:papaparse --external:dotenv --outfile=dist/spiker.js",
+    "start": "npx node dist/spiker.js",
     "test": "npx jest"
   },
   "dependencies": {
@@ -22,8 +23,12 @@
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "esbuild": "^0.11.11",
     "eslint": "^7.23.0",
     "jest": "^26.6.3",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.5",
+    "typescript": "^4.2.4"
   }
 }

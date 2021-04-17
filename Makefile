@@ -13,15 +13,20 @@ test:
 	@echo ">> Test"
 	npm run test
 
-start: 
+compile:
+	npm run build
+	cp -R src/public dist/public
+
+start: compile
 	@echo ">> Start"
 	REPO=$(REPO) npm run start
 
 clean: 
 	@echo ">> Cleaning"
-	rm -rf node_modules
+#	rm -rf node_modules
+	rm -rf dist
 
-build: 
+build: compile
 	@echo ">> Building docker image"
 	docker build -f $(shell pwd)/docker/Dockerfile -t $(DOCKER_REGISTRY)$(PROJECT):$(GIT_REF) .
 

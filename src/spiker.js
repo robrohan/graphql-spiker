@@ -1,8 +1,7 @@
 const fs = require("fs");
 const { getValues, readCachedTable, FILE_CACHE } = require("./repository");
 const { toTypeName } = require("./manipulation");
-// const pluralize = require("pluralize");
-const { Source, parse } = require("graphql"); // CommonJS
+const { Source, parse } = require("graphql");
 const { log } = require("./log");
 
 function initSpiker() {
@@ -46,7 +45,6 @@ function initSpiker() {
 **/
 function astArgumentToLink(arg) {
   let linkDef = { table: undefined, field: undefined };
-  // log(arg);
   switch (arg.name.value) {
     case "table":
       linkDef.table = arg.value.value;
@@ -55,8 +53,30 @@ function astArgumentToLink(arg) {
       linkDef.field = arg.value.value;
       break;
   }
-  // log(linkDef);
   return linkDef;
+}
+
+// Given the part of the ast that has the Query stuff
+// do a bunch of loops and build an array of structs
+// we can use to build the resolvers
+function astQueryToSpikerQueries(def) {
+  const spikerQueries = [];
+
+  def.fields.forEach((field) => {
+    // Query name in the schema...
+    const queryDef = newQueryDef(field.name.value);
+    field.directives.forEach((dir) => {
+      if (dir.name.value === "spiker") {
+        dir.arguments.forEach((arg) => {
+          // spiker directives (table, field, etc)
+          queryDef.linkDef = astArgumentToLink(arg);
+        });
+      }
+    });
+    spikerQueries.push(queryDef);
+  });
+
+  return spikerQueries;
 }
 
 // Struct of a query definition built from the
@@ -73,47 +93,28 @@ function evaluateSchema(typeDefs) {
   const s = new Source(typeDefs);
   const d = parse(s);
 
-  const spikerQueries = [];
+  let spikerQueries = [];
 
   d.definitions.forEach((def) => {
     switch (def.kind) {
       case "ObjectTypeDefinition":
-        {
-          if (def.name.kind === "Name" && def.name.value === "Query") {
-            def.fields.forEach((field) => {
-              // Query name in the schema
-              const queryDef = newQueryDef(field.name.value);
-              field.directives.forEach((dir) => {
-                if (dir.name.value === "spiker") {
-                  dir.arguments.forEach((arg) => {
-                    // spiker directives
-                    queryDef.linkDef = astArgumentToLink(arg);
-                  });
-                }
-              });
-              spikerQueries.push(queryDef);
-            });
-          }
+        if (def.name.kind === "Name" && def.name.value === "Query") {
+          spikerQueries = astQueryToSpikerQueries(def);
         }
         break;
-      default: {
-        log("Unhandled --->", def.kind);
-      }
+      case "DirectiveDefinition":
+        // This should just be our @spiker definition
+        break;
+      default:
+        log("Unhandled --->", def.kind, "on", def.name.value);
     }
-    // log(spikerQueries);
   });
 
   return spikerQueries;
 }
 
-// Using the table names, create generic resolvers
-// that use the name and name with a "plural"
-// Mutation: {
-//   // createResponse: async (_, { response }, ctx) => {
-//   //   const res = await addRow(ctx, 'traits', response);
-//   //   return res;
-//   // },
-// },
+// Using the "table" names, and user defined Queries
+// that call the generic resolvers
 function makeResolvers(tables, queries) {
   // const rtn = { Query: {}, Mutation: {} }
   const rtn = { Query: {} };
@@ -132,8 +133,7 @@ function makeResolvers(tables, queries) {
       rtn[t] = {};
       for (let i = 0; i < fields.length; i++) {
         if (fields[i].endsWith("_id")) {
-          // const relation = toTypeName(fields[i].split("_id")[0]);
-          const relation = fields[i].split("_id")[0];
+          const relation = toTypeName(fields[i].split("_id")[0]);
           log(`${t} assumed relation:`, relation);
           const objRelation =
             relation.charAt(0).toUpperCase() + relation.slice(1);
@@ -145,6 +145,7 @@ function makeResolvers(tables, queries) {
     }
   });
 
+  log(`Creating resolvers for user defined queries...`);
   // User defined queries in the schema
   queries.forEach((query) => {
     rtn.Query[query.name] = async (parent, args, ctx) => {

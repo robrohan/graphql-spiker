@@ -1,10 +1,10 @@
-const fs = require("fs");
-const { getValues, readCachedTable, FILE_CACHE } = require("./repository");
-const { toTypeName } = require("./manipulation");
-const { Source, parse } = require("graphql");
-const { log } = require("./log");
+import fs from "fs";
+import { getValues, readCachedTable, FILE_CACHE } from "./repository";
+import { toTypeName } from "./manipulation";
+import { Source, parse } from "graphql";
+import { log } from "./log";
 
-function initSpiker() {
+export function initSpiker() {
   const rawSchema = fs.readFileSync(
     `./repository/${process.env.REPO}/schema.graphql`,
     "utf8"
@@ -155,7 +155,3 @@ function makeResolvers(tables, queries) {
 
   return rtn;
 }
-
-module.exports = {
-  initSpiker,
-};

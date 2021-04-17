@@ -1,9 +1,15 @@
-const fs = require("fs");
+import fs from 'fs';
+import { ApolloServer } from 'apollo-server-express';
+// const fs = require("fs");
 const { ApolloServer } = require("apollo-server-express");
-const express = require("express");
-const http = require("http");
-const { log } = require("./log");
-const { initSpiker } = require("./spiker");
+// const express = require("express");
+import express from "express";
+// const http = require("http");
+import http from "http";
+// const { log } = require("./log");
+import { log } from "./log";
+// const { initSpiker } = require("./spiker");
+import { initSpiker } from "./spiker";
 
 /////////////////////////////////////////
 
@@ -40,7 +46,7 @@ const server = new ApolloServer({
   cors: corsOptions,
   typeDefs,
   resolvers,
-  context: async () => {},
+  context: async () => { },
 });
 server.applyMiddleware({ app, cors: corsOptions });
 const PORT = process.env.PORT || 4000;

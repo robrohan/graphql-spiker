@@ -1,21 +1,21 @@
 require("dotenv").config();
-const fs = require("fs");
-const Papa = require("papaparse");
-const { log } = require("./log");
-const { newNode, insertInto, search } = require("./btree");
-const { toFileName, isPluralized } = require("./manipulation");
+import fs from "fs";
+import Papa from "papaparse";
+import { log } from "./log";
+import { newNode, insertInto, search } from "./btree";
+import { toFileName, isPluralized } from "./manipulation";
 
 // Just to keep people from doing large datasets
 // and crashing things.
 const MAX_RESULTS = 1000;
 // Object to hold files once read from disk
-const FILE_CACHE = {};
+export const FILE_CACHE = {};
 // If the table has an ID make a btree of the ids
 // for a bit faster lookup
 const ID_IDX_CACHE = {};
 
 // Read a "table" (aka csv file) from disk
-function readCachedTable(table, reload = false) {
+export function readCachedTable(table, reload = false) {
   if (FILE_CACHE[table] === undefined || reload === true) {
     const csv = Papa.parse(
       fs.readFileSync(`./repository/${process.env.REPO}/${table}.csv`, "utf8"),
@@ -137,7 +137,7 @@ function scanTable(table, filter) {
   return records;
 }
 
-async function getValues(parent, ctx, sheet, args) {
+export async function getValues(parent, ctx, sheet, args) {
   // if we have a parent, we might have a single or array
   // type query (one to one, one to many)...
   if (parent) {
@@ -154,9 +154,3 @@ async function getValues(parent, ctx, sheet, args) {
   // force table into non-plural
   return scanTable(sheet, args);
 }
-
-module.exports = {
-  getValues,
-  readCachedTable,
-  FILE_CACHE,
-};

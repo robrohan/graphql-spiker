@@ -1,8 +1,9 @@
+// import pluralize from "pluralize";
 const pluralize = require("pluralize");
 
 // Tries to make sure whatever you pass it looks
 // like what a table name would look like.
-function toFileName(typename) {
+export function toFileName(typename) {
   const single = pluralize(typename, 1);
   const fntn = toTypeName(single);
   return fntn.slice(0, 1).toUpperCase() + fntn.slice(1);
@@ -11,7 +12,7 @@ function toFileName(typename) {
 // Make sure the first char is lowercase, and any _<letter>
 // upper cases the next letter. So you wind up with something
 // like: foodCategory
-function toTypeName(filename) {
+export function toTypeName(filename) {
   const len = filename.length;
   let newString = [];
 
@@ -39,12 +40,6 @@ function toTypeName(filename) {
   return newString.join("");
 }
 
-function isPluralized(str) {
+export function isPluralized(str) {
   return str.toLowerCase() === pluralize(str.toLowerCase(), 1);
 }
-
-module.exports = {
-  toTypeName,
-  toFileName,
-  isPluralized,
-};

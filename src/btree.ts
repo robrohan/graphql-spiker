@@ -1,4 +1,13 @@
-function newNode(id, data) {
+
+export type Data = any;
+export type Node = {
+  id: string,
+  left: Node,
+  right: Node,
+  data: Data,
+};
+
+export function newNode(id: string, data?: Data) {
   return {
     id: id || "0",
     left: undefined,
@@ -7,7 +16,7 @@ function newNode(id, data) {
   };
 }
 
-function insertInto(parent, node) {
+export function insertInto(parent: Node, node: Node): void {
   // if data is equal to the ID then append to data array
   if (parent.id === node.id) {
     if (parent.data === undefined) parent.data = node.data;
@@ -36,21 +45,15 @@ function insertInto(parent, node) {
   }
 }
 
-function search(parent, query) {
-  if (parent === undefined || query === undefined) return undefined;
-  if (parent.id === query) {
+export function search(parent: Node, idQuery: string): Data {
+  if (parent === undefined || idQuery === undefined) return undefined;
+  if (parent.id === idQuery) {
     return parent.data;
   }
-  if (parent.id > query) {
-    return search(parent.left, query);
+  if (parent.id > idQuery) {
+    return search(parent.left, idQuery);
   }
-  if (parent.id < query) {
-    return search(parent.right, query);
+  if (parent.id < idQuery) {
+    return search(parent.right, idQuery);
   }
 }
-
-module.exports = {
-  newNode,
-  insertInto,
-  search,
-};

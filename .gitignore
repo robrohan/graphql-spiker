@@ -6,5 +6,6 @@ credentials.json
 .vscode
 node_modules
 kubernetes
+dist
 # Test data, 20ish MB
 repository/medium

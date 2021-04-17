@@ -2,20 +2,24 @@ require("dotenv").config();
 import fs from "fs";
 import Papa from "papaparse";
 import { log } from "./log";
-import { newNode, insertInto, search } from "./btree";
-import { toFileName, isPluralized } from "./manipulation";
+import { newNode, insertInto, search, Node } from "./btree";
+import { toFileName, isPluralized, TableFileName } from "./manipulation";
+
+export type FileCache = Record<TableFileName, Node | any>;
+export type Filter = Record<string, string>;
+export type CSVObj = { meta: any, data: any[] };
 
 // Just to keep people from doing large datasets
 // and crashing things.
 const MAX_RESULTS = 1000;
 // Object to hold files once read from disk
-export const FILE_CACHE = {};
+export const FILE_CACHE: FileCache = {};
 // If the table has an ID make a btree of the ids
 // for a bit faster lookup
-const ID_IDX_CACHE = {};
+const ID_IDX_CACHE: FileCache = {};
 
 // Read a "table" (aka csv file) from disk
-export function readCachedTable(table, reload = false) {
+export function readCachedTable(table: TableFileName, reload = false): [CSVObj, Node] {
   if (FILE_CACHE[table] === undefined || reload === true) {
     const csv = Papa.parse(
       fs.readFileSync(`./repository/${process.env.REPO}/${table}.csv`, "utf8"),
@@ -48,7 +52,7 @@ export function readCachedTable(table, reload = false) {
 
 // Quick and dirty (and very non-performant) search
 // but this is not a database ... or is it?
-function filterRecords(table, filter) {
+function filterRecords(table: TableFileName, filter: Filter): any[] {
   const [tbl, idx] = readCachedTable(table);
   const data = tbl.data;
 
@@ -126,7 +130,7 @@ function filterRecords(table, filter) {
 
 // Scan a table using a set of filters. This is
 // perfect match only
-function scanTable(table, filter) {
+function scanTable(table: TableFileName, filter: Filter) {
   const records = filterRecords(toFileName(table), filter);
 
   // An ID query should only return one record
@@ -137,7 +141,7 @@ function scanTable(table, filter) {
   return records;
 }
 
-export async function getValues(parent, ctx, sheet, args) {
+export async function getValues(parent, ctx, sheet: string, args: any) {
   // if we have a parent, we might have a single or array
   // type query (one to one, one to many)...
   if (parent) {

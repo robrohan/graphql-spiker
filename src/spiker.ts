@@ -1,8 +1,17 @@
 import fs from "fs";
 import { getValues, readCachedTable, FILE_CACHE } from "./repository";
-import { toTypeName } from "./manipulation";
+import { TableFileName, toTypeName } from "./manipulation";
 import { Source, parse } from "graphql";
 import { log } from "./log";
+
+export type SpikerLinkDef = {
+  table: TableFileName
+  field: string
+}
+export type SpikerQueryDef = {
+  name: string
+  linkDef?: SpikerLinkDef
+}
 
 export function initSpiker() {
   const rawSchema = fs.readFileSync(
@@ -43,7 +52,7 @@ export function initSpiker() {
        loc: [Object] },
     loc: { start: 120, end: 137 } } 
 **/
-function astArgumentToLink(arg) {
+function astArgumentToLink(arg: any): SpikerLinkDef {
   let linkDef = { table: undefined, field: undefined };
   switch (arg.name.value) {
     case "table":
@@ -59,7 +68,7 @@ function astArgumentToLink(arg) {
 // Given the part of the ast that has the Query stuff
 // do a bunch of loops and build an array of structs
 // we can use to build the resolvers
-function astQueryToSpikerQueries(def) {
+function astQueryToSpikerQueries(def: any): SpikerQueryDef[] {
   const spikerQueries = [];
 
   def.fields.forEach((field) => {
@@ -81,7 +90,7 @@ function astQueryToSpikerQueries(def) {
 
 // Struct of a query definition built from the
 // ast schema, to be used to build resolvers
-function newQueryDef(name) {
+function newQueryDef(name: string): SpikerQueryDef {
   return {
     name,
     linkDef: undefined,
@@ -89,11 +98,11 @@ function newQueryDef(name) {
 }
 
 // Parse schema and create queries and mutations
-function evaluateSchema(typeDefs) {
+function evaluateSchema(typeDefs: string): SpikerQueryDef | undefined {
   const s = new Source(typeDefs);
   const d = parse(s);
 
-  let spikerQueries = [];
+  let spikerQueries = undefined;
 
   d.definitions.forEach((def) => {
     switch (def.kind) {
@@ -115,7 +124,7 @@ function evaluateSchema(typeDefs) {
 
 // Using the "table" names, and user defined Queries
 // that call the generic resolvers
-function makeResolvers(tables, queries) {
+function makeResolvers(tables: string[], queries: SpikerQueryDef[]) {
   // const rtn = { Query: {}, Mutation: {} }
   const rtn = { Query: {} };
 

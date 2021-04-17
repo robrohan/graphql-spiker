@@ -7,7 +7,7 @@ export type Node = {
   data: Data,
 };
 
-export function newNode(id: string, data?: Data) {
+export function newNode(id: string, data?: Data): Node {
   return {
     id: id || "0",
     left: undefined,

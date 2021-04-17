@@ -1,10 +1,9 @@
 require("dotenv").config();
 const fs = require("fs");
-const pluralize = require("pluralize");
 const Papa = require("papaparse");
 const { log } = require("./log");
 const { newNode, insertInto, search } = require("./btree");
-const { toFileName } = require("./manipulation");
+const { toFileName, isPluralized } = require("./manipulation");
 
 // Just to keep people from doing large datasets
 // and crashing things.
@@ -136,10 +135,6 @@ function scanTable(table, filter) {
     return records[0] || undefined;
   }
   return records;
-}
-
-function isPluralized(str) {
-  return str.toLowerCase() === pluralize(str.toLowerCase(), 1);
 }
 
 async function getValues(parent, ctx, sheet, args) {

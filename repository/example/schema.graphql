@@ -20,15 +20,9 @@ type Tag {
 }
 
 type Query {
-  # Any types defined, must be defined here as well
-  # along with the plural form
   trait(id: ID!): Trait
-  traits: [Trait!]!
-
-  category(id: ID!): Category
-  categories: [Category!]!
-
-  tag(id: ID!): Tag
-  tags: [Tag!]!
-  traitsByCategory(category_id: String!): [Trait!]!
+  traits: [Trait!]! @spiker(table: "Trait")
+  # category(id: ID!): Category
+  categories: [Category!]! @spiker(table: "Category")
+  traitsByCategory(category_id: String!): [Trait!]! @spiker(table: "Trait")
 }

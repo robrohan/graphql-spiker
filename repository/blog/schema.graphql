@@ -1,21 +1,24 @@
-type Query {
-  getAllBlogs(): [BlogPost]
-  getBlogPost(id: ID!): BlogPost
-}
+# directive @spiker(table: String, field: String) on FIELD_DEFINITION
 
-type Mutation {
-  addBlogPost(title: String!, content: String!, authorID: ID!): BlogPost!
+type Query {
+  blogPost(id: ID!): BlogPost @spiker(table: "BlogPost")
+  # blogPosts: [BlogPost] @spiker(table: "BlogPost")
+  # author(id: ID!): Author @spiker(table: "Author")
+  # authors: [Author] @spiker(table: "Author")
+
+  blogPostsByTitle(title: String!): [BlogPost] @spiker(table: "BlogPost")
 }
 
 type BlogPost {
   id: ID!
   title: String!
   content: String!
-  hasAuthor: Author!
+  author: Author!
+  coAuthor: Author @spiker(table: "BlogPost", field: "author_id")
 }
 
 type Author {
   id: ID!
   name: String!
-  hasBlog: [BlogPost]
+  blogPost: [BlogPost]
 }

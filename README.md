@@ -6,7 +6,7 @@ It could also be used for proof of concept ideas, or super small internal servic
 
 ## How it Works
 
-1. Define a schema in the repository directory: `schema.graphql`
+1. Define a schema in a sub-directory in the repository directory: `schema.graphql`
 1. Create CSV files in the same directory with the name of the Types you define in the schema. Case matters, use uppercase object names. Meaning:
 
 ```
@@ -32,18 +32,45 @@ Could be backed by the following CSV:
 "1","things","0.5"
 ```
 
-Additionally, _any_ object you add needs to be added to the query section for a singular select and a plural select. For example, Traits above _must_ have this is the graphql schema Query section:
+### Query Section
+
+You can link items in the query section using the `@spiker` directive. Using the directive you specify which "table" (aka file) the query is supposed to run against. The parameters passed will be assumed to be columns on that table / object. Here are some examples:
 
 ```gql
 type Query {
-  ...
-  trait(id: ID!): Trait
-  traits: [Trait!]!
-  ...
+  trait(id: ID!): Trait @spiker(table: "Trait")
+  traits: [Trait!]! @spiker(table: "Trait")
+  categories: [Category!]! @spiker(table: "Category")
+  traitsByCategory(category_id: String!): [Trait!]! @spiker(table: "Trait")
+  categoryByText(text: String!): [Category] @spiker(table: "Category")
 }
 ```
 
-The server will error on start up if all objects in the schema do not have both of these defined for every type.
+Here are some example queries that use the schema above.
+
+```gql
+{
+  trait(id: "1") {
+    id
+  }
+  traits {
+    id
+    category {
+      text
+    }
+    tags {
+      id
+    }
+  }
+  categoryByText(text: "category 1") {
+    id
+  }
+}
+```
+
+For reference, the inject directive is:
+
+`directive @spiker(table: String, field: String) on FIELD_DEFINITION`
 
 ### One to One
 

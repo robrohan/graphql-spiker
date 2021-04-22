@@ -1,4 +1,3 @@
-// import pluralize from "pluralize";
 const pluralize = require("pluralize");
 
 export type TypeName = string;

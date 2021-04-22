@@ -21,7 +21,7 @@ const ID_IDX_CACHE: FileCache = {};
 // Read a "table" (aka csv file) from disk
 export function readCachedTable(table: TableFileName, reload = false): [CSVObj, Node] {
   if (FILE_CACHE[table] === undefined || reload === true) {
-    const csv = Papa.parse(
+    const csv: CSVObj = Papa.parse(
       fs.readFileSync(`./repository/${process.env.REPO}/${table}.csv`, "utf8"),
       {
         quotes: false,
@@ -36,10 +36,14 @@ export function readCachedTable(table: TableFileName, reload = false): [CSVObj, 
     FILE_CACHE[table] = csv;
 
     // If the fields have a dedicated ID use that to build
-    // a btree index to try to make the lookup faster
+    // a btree index to try to make id lookups faster
     if (csv.meta.fields.indexOf("id") >= 0) {
       log("Building tree based on id...");
-      const troot = newNode((MAX_RESULTS >> 1) + "");
+      // Try to make the root node somewhat unusual to 
+      // try to keep the tree at least somewhat balanced
+      const pivot = (csv.data.length >> 1);
+      log("Tree pivot:", pivot);
+      const troot = newNode(pivot + "");
       csv.data.forEach((v) => {
         insertInto(troot, newNode(v["id"], v));
       });
@@ -66,7 +70,7 @@ function filterRecords(table: TableFileName, filter: Filter): any[] {
   // limited to max size. (could use this for
   // paging...)
   if (filterKeyLen === 0) {
-    log(`${table}: No filter return slice...`);
+    log(`${table}: No filter return table slice...`);
     return data.slice(0, MAX_RESULTS);
   }
 

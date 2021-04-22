@@ -17,9 +17,9 @@ export function newNode(id: string, data?: Data): Node {
 }
 
 export function insertInto(parent: Node, node: Node): void {
-  // if data is equal to the ID then append to data array
   if (parent.id === node.id) {
     if (parent.data === undefined) parent.data = node.data;
+    // if data is equal to the ID then append / create a data array
     if (parent.data) {
       if (Array.isArray(parent.data)) {
         parent.data = [...parent.data, node.data];
@@ -29,15 +29,14 @@ export function insertInto(parent: Node, node: Node): void {
     }
   }
 
-  // check if the parents data is less than our data
-  // if so visit left
+  // visit left
   if (parent.id > node.id && parent.left === undefined) {
     parent.left = node;
   } else if (parent.id > node.id && parent.left !== undefined) {
     return insertInto(parent.left, node);
   }
 
-  // if data is greater than our data go right
+  // visit right
   if (parent.id < node.id && parent.right === undefined) {
     parent.right = node;
   } else if (parent.id < node.id && parent.right !== undefined) {

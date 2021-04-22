@@ -1,22 +1,12 @@
 import fs from 'fs';
-// import { ApolloServer } from 'apollo-server-express';
-// const fs = require("fs");
 const { ApolloServer } = require("apollo-server-express");
-// const express = require("express");
 import express from "express";
-// const http = require("http");
 import http from "http";
-// const { log } = require("./log");
 import { log } from "./log";
-// const { initSpiker } = require("./spiker");
 import { initSpiker } from "./spiker";
-
-/////////////////////////////////////////
 
 const [typeDefs, resolvers] = initSpiker();
 log(resolvers);
-
-/////////////////////////////////////////
 
 const app = express();
 const corsOptions = {
@@ -55,8 +45,6 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   log(`🚀 Server ready at ${PORT}`);
 });
-
-/////////////////////////////////////////
 
 // To serve up the test client in :4001/public
 log(`Starting example frontend server...`);

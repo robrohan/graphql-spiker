@@ -43,13 +43,13 @@ export function initSpiker() {
 }
 
 /**
- { kind: 'Argument',
+{ kind: 'Argument',
     name: { kind: 'Name', value: 'table', loc: [Object] },
     value:
-     { kind: 'StringValue',
-       value: 'BlogPost',
-       block: false,
-       loc: [Object] },
+    { kind: 'StringValue',
+      value: 'BlogPost',
+      block: false,
+      loc: [Object] },
     loc: { start: 120, end: 137 } } 
 **/
 function astArgumentToLink(arg: any): SpikerLinkDef {
@@ -98,7 +98,7 @@ function newQueryDef(name: string): SpikerQueryDef {
 }
 
 // Parse schema and create queries and mutations
-function evaluateSchema(typeDefs: string): SpikerQueryDef | undefined {
+function evaluateSchema(typeDefs: string): SpikerQueryDef[] | undefined {
   const s = new Source(typeDefs);
   const d = parse(s);
 
@@ -115,7 +115,7 @@ function evaluateSchema(typeDefs: string): SpikerQueryDef | undefined {
         // This should just be our @spiker definition
         break;
       default:
-        log("Unhandled --->", def.kind, "on", def.name.value);
+        log("Unhandled --->", def.kind, "on", def['name']?.value);
     }
   });
 
